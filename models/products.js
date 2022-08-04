@@ -1,33 +1,37 @@
 const mongoose = require('mongoose');
 
 const objectSchema = {
-    id: { 
-        type: Number, 
+    id: {
+        type: Number,
         required: true,
         unique: true
     },
-    title: { 
-        type: String, 
-        required: true 
+    id_provider: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Provider',
     },
-    price: { 
-        type: Number, 
-        required: true 
+    title: {
+        type: String,
+        required: true
     },
-    description: { 
-        type: String, 
-        required: true 
+    price: {
+        type: Number,
+        required: true
     },
-    image:{
+    description: {
+        type: String,
+        required: true
+    },
+    image: {
         type: String,
         validate: {
-            validator: function(url){
-                if(url.indexOf('.jpg') != -1 || url.indexOf('.png') != -1)
+            validator: function (url) {
+                if (url.indexOf('.jpg') != -1 || url.indexOf('.png') != -1)
                     return true;
                 else {
                     return false;
                 }
-            }, 
+            },
             message: "Porfa, sólo imágenes JPG o PNG"
         }
     }

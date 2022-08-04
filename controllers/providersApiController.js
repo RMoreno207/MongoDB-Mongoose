@@ -1,0 +1,105 @@
+// Controlador - Lógica de negocio de la app
+const Provider = require('../models/providers'); // Importo el modelo de BBDD Products
+
+const getProvider = async (req, res) => {
+    if (req.params.id) { //FIND BY ID
+        try {
+            let provider =  await Provider.find({id:req.params.id},'-_id -__v');
+            res.status(200).json(provider); 
+        }
+        catch (error) {
+            console.log(`ERROR: ${error.stack}`);
+            res.status(404).json({"message":"producto no encontrado"});
+        }
+    } else { // FIND ALL
+        try {
+            let provider = await Provider.find({},'-_id -__v').sort('-id'); //[]
+            res.status(200).json({provider});
+        }
+        catch (error) {
+            console.log(`ERROR: ${error.stack}`);
+            res.status(404).json({"message":"proveedores no encontrados"});
+        }
+    }
+}
+const createProvider = async (req, res) => {
+    console.log("Esto es el consol.log de lo que introducimos por postman",req.body); // Objeto recibido de producto nuevo
+    const newProvider = req.body; // {} nuevo producto a guardar
+    // Líneas
+    //para guardar 
+    // en una BBDD SQL o MongoDB
+    try{
+        let provider = new Provider(req.body); // Crear el objeto Product con los datos del producto
+        let answer = await provider.save(); // Guardar objeto en MongoDB
+        console.log("Este es el console.log de lo que devuelve la api",answer);
+        res.status(201).json({"message":`Producto ${answer.title} guardado en el sistema con ID: ${answer.id}`});
+    
+    }catch(error){
+        console.log(`ERROR: ${error.stack}`);
+        res.status(400).json({"message":`Error guardando producto ${answer.title} `});
+    }
+}
+
+// const deleteProduct = async (req,res)=>{
+//     const msj ="Has enviado un DELETE para borrar product";
+//     console.log(msj);
+//     res.json({"message":msj});
+// }
+
+module.exports = {
+    getProvider,
+    createProvider
+    // deleteProduct
+    //editProduct,
+}
+
+// OTRA MANERA
+
+// const products = {
+//     getProducts: async (req, res) => {
+//         if (req.params.id) {
+//             try {
+//                 let response = await fetch(`https://fakestoreapi.com/products/${req.params.id}`); //{}
+//                 let products = await response.json(); //{}
+//                 res.render('products', { "products": [products] }); // Pinta datos en el pug
+//             }
+//             catch (error) {
+//                 console.log(`ERROR: ${error.stack}`);
+//             }
+//         } else {
+//             try {
+//                 let response = await fetch(`https://fakestoreapi.com/products`); // []
+//                 let products = await response.json(); // []
+//                 res.render('products', { products }); // Pinta datos en el pug
+//             }
+//             catch (error) {
+//                 console.log(`ERROR: ${error.stack}`);
+//             }
+//         }
+//     },
+//     createProduct: async (req, res) => {
+//         console.log("Esto es el consol.log de lo que introducimos por postman",req.body); // Objeto recibido de producto nuevo
+//         const newProduct = req.body; // {} nuevo producto a guardar
+    
+//         // Líneas
+//         //para guardar 
+//         // en una BBDD SQL o MongoDB
+    
+//         let response = await fetch('https://fakestoreapi.com/products', {
+//             method: "POST",
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(newProduct)
+//         })
+//         let answer = await response.json(); // objeto de vuelta de la petición
+//         console.log("Este es el console.log de lo que devuelve la api",answer);
+    
+//         res.send(`Producto ${answer.title} guardado en el sistema con ID: ${answer.id}`);
+//     },
+//     deleteProduct: async (req, res) =>  console.log("Borrando pruducto"),
+//     editProduct: async (req, res) =>  console.log("Borrando pruducto")
+// }
+
+// module.exports = products;
