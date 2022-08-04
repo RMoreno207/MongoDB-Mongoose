@@ -1,19 +1,12 @@
 // Controlador - Lógica de negocio de la app
-const Product = require('../models/products'); // Importo el modelo de BBDD Products
 
+const Product = require('../models/products'); // Importo el modelo de BBDD Products
 const getProducts = async (req, res) => {
-    if (req.params.id) { //FIND BY ID
+    // FIND ALL PRODUCTS
         try {
-            let product =  await Product.find({id:req.params.id},'-_id -__v');
-            res.status(200).json(product); 
-        }
-        catch (error) {
-            console.log(`ERROR: ${error.stack}`);
-            res.status(404).json({"message":"producto no encontrado"});
-        }
-    } else { // FIND ALL
-        try {
-            let products = await Product.find({},'-_id -__v').sort('-id'); //[]
+            let products = await Product.find({})
+            .populate('provider', 'company_name')
+            .sort({'id':'asc'});
             res.status(200).json({products});
         }
         catch (error) {
@@ -21,7 +14,29 @@ const getProducts = async (req, res) => {
             res.status(404).json({"message":"productos no encontrados"});
         }
     }
-}
+
+// const getProducts = async (req, res) => {
+//     if (req.params.id) { //FIND BY ID
+//         try {
+//             let product =  await Product.find({id:req.params.id},'-_id -__v');
+//             res.status(200).json(product); 
+//         }
+//         catch (error) {
+//             console.log(`ERROR: ${error.stack}`);
+//             res.status(404).json({"message":"producto no encontrado"});
+//         }
+//     } else { // FIND ALL
+//         try {
+//             let products = await Product.find({},'-_id -__v').sort('-id'); //[]
+//             res.status(200).json({products});
+//         }
+//         catch (error) {
+//             console.log(`ERROR: ${error.stack}`);
+//             res.status(404).json({"message":"productos no encontrados"});
+//         }
+//     }
+// }
+
 const createProduct = async (req, res) => {
     console.log("Esto es el consol.log de lo que introducimos por postman",req.body); // Objeto recibido de producto nuevo
     const newProduct = req.body; // {} nuevo producto a guardar
@@ -39,11 +54,13 @@ const createProduct = async (req, res) => {
         res.status(400).json({"message":`Error guardando producto ${answer.title} `});
     }
 }
+
 const deleteProduct = async (req,res)=>{
     const msj ="Has enviado un DELETE para borrar product";
     console.log(msj);
     res.json({"message":msj});
 }
+
 module.exports = {
     getProducts,
     createProduct,

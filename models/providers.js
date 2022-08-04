@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 
 const objectSchema = {
-    _id: {
-        type: Number,
-        required: true,
-        unique: true
-
-    },
     company_name: {
         type: String,
         required: true,

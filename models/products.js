@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
-
+require('./providers');
 const objectSchema = {
     id: {
         type: Number,
         required: true,
         unique: true
-    },
-    id_provider: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Provider',
     },
     title: {
         type: String,
@@ -34,7 +30,11 @@ const objectSchema = {
             },
             message: "Porfa, sólo imágenes JPG o PNG"
         }
-    }
+    },
+    provider: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Provider',
+    }]
 };
 // Crear el esquema
 const productSchema = mongoose.Schema(objectSchema);
